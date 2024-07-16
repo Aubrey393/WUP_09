@@ -78,23 +78,51 @@ library(car)
 subsets(regsubsets.out,statistic="adjr2",legend="bottomright",main="Adjusted R^2")
 ```
 
-The best two regressor model is H-W with an adjusted R^2 of 0.94.
+The best two regressor model is H-W.
 
 ### Best Two regressor model
 ```{r}
 Perch2model=lm(Weight~Height+Width,data = Perch)
 summary.lm(Perch2model)
 ```
-The best two regressor model used to predict weight is using height and weight(H-W) with an adjusted R^2 of 0.94.
+The best two regressor model used to predict weight FOR Perch is using height and weight(H-W).
 
 
 ## Pike
 
 ### Best Models
 
+```{r}
+Pikemodel1=lm(Weight~ .,data=Pike)
+summary.lm(Pikemodel1)
+```
+
+```{r}
+library(leaps)
+regsubsets.out <-
+    regsubsets(Weight ~ .,
+               data = Pike,
+               nbest = 1,       # 1 best model for each number of predictors
+               nvmax = NULL,    # NULL for no limit on number of variables
+               force.in = NULL, force.out = NULL,
+               method = "exhaustive")
+
+summary.out <- summary(regsubsets.out)
+as.data.frame(summary.out$outmat)
+library(car)
+subsets(regsubsets.out,statistic="adjr2",legend="bottomright",main="Adjusted R^2")
+```
+
 ### Best Two regressor model
 
+```{r}
+Pike2Model=lm(Weight~Length1+Length3,data = Pike)
+summary.lm(Pike2Model)
+```
+The best regressor model for predicting weight for Pike is using Length 1 and Length 3.
+
 ## Roach
+
 
 ### Best Models
 
