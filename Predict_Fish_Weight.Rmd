@@ -7,11 +7,8 @@ output:
     number_sections: true
     toc: true
     toc_depth: 5
-
- 
     
 ---
-
 
 ```{r include=FALSE,echo=FALSE}
 require(tigerstats)
@@ -47,42 +44,53 @@ Whitefish <- select(Whitefish, -Species)
 ```
 
 # For each of the three species of fish listed below, determine the best regression model and also the best 2 element regression model. Use the BestSubset Regression helper file.
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 ```{r}
 require(tidyverse)
 if(!require("Bolstad")) {install.packages("Bolstad");require("Bolstad")}
-
-data(bears)
-Bears <- select(bears,contains("e"),-Name)
-#Clean missing values out of dataset (needed to run Anova at end of demo)
-Bears<- na.omit(Bears)
 ```
 
 
 ## Perch
 
+### Best Models
 ```{r}
 perchModel=lm(Weight~ .,data = Perch)
 summary.lm(perchModel)
 ```
 
-### Best Models
+```{r}
+library(leaps)
+regsubsets.out <-
+    regsubsets(Weight ~ .,
+               data = Perch,
+               nbest = 1,       # 1 best model for each number of predictors
+               nvmax = NULL,    # NULL for no limit on number of variables
+               force.in = NULL, force.out = NULL,
+               method = "exhaustive")
+
+summary.out <- summary(regsubsets.out)
+as.data.frame(summary.out$outmat)
+library(car)
+subsets(regsubsets.out,statistic="adjr2",legend="bottomright",main="Adjusted R^2")
+```
+
+The best two regressor model is H-W with an adjusted R^2 of 0.94.
 
 ### Best Two regressor model
+```{r}
+Perch2model=lm(Weight~Height+Width,data = Perch)
+summary.lm(Perch2model)
+```
+The best two regressor model used to predict weight is using height and weight(H-W) with an adjusted R^2 of 0.94.
 
 
 ## Pike
 
 ### Best Models
-
-
-
-```{r}
-perchModel=lm(Weight~ .,data = Perch)
-Summary.lm(perchModel)
-```
 
 ### Best Two regressor model
 
